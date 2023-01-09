@@ -14,10 +14,12 @@
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14",
+        "sass-loader": "^13.2.0",
         "vue-loader": "^17.0.1"
     },
     "dependencies": {
         "font-awesome": "^4.7.0",
+        "sass": "^1.57.1",
         "vue": "^3.2.36",
         "vuestic-ui": "^1.5.3"
     }
