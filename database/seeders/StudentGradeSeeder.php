@@ -26,7 +26,7 @@ class StudentGradeSeeder extends Seeder
             'name'    => 'Gian Javelona',
             'email'   => 'ceo@orangeappps.ph',
             'grade'   => '100',
-            'conduct' => '4',
+            'conduct' => '100',
         ]);
 
         $faker = Factory::create();
@@ -36,8 +36,8 @@ class StudentGradeSeeder extends Seeder
                 'stud_no' => 'ST-0' . $i,
                 'name'    => $faker->name(),
                 'email'   => $faker->email(),
-                'grade'   => rand(70, 90),
-                'conduct' => rand(1, 5),
+                'grade'   => rand(70, 97),
+                'conduct' => rand(70, 97),
             ]);
         };
     }

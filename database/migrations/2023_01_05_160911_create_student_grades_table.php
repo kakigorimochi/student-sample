@@ -19,7 +19,7 @@ class CreateStudentGradesTable extends Migration
             $table->string('name', 50);
             $table->string('email', 50);
             $table->decimal('grade');
-            $table->integer('conduct')->nullable();
+            $table->decimal('conduct');
             $table->timestamps();
         });
     }

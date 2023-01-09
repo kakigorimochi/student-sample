@@ -20,15 +20,60 @@
             body {
                 font-family: 'Nunito', sans-serif;
             }
+            #gradetbl .no-data {
+                padding: 25px 0;
+            }
+            #gradetbl .table-slots__head th {
+                font-size: 10px;
+                padding: 0.4em 1em;
+                text-align: left;
+            }
+            #gradetbl .table-slots__head th:first-child,
+            #gradetbl .table-slots__head th:last-child {
+                background-color: var(--va-info);
+                opacity: 0.2;
+            }
+            #gradetbl .table-slots__head th:nth-child(2) {
+                color: #ffffff;
+                background-color: var(--va-secondary);
+                opacity: 0.5;
+            }
+            #gradetbl .table-slots__head th span:first-child {
+                padding: 0 1em 0 0.8em;
+            }
+            #gradetbl .table-slots__head th span:nth-child(2) {
+                padding: 0 1em 0 1em;
+            }
             button#awardbtn span.va-button__content {
+                justify-content: center;
                 font-size: 11px;
                 padding: 0 5px;
+            }
+            button#awardbtn.top10 span.va-button__content {
+                width: 44px;
+            }
+            button#awardbtn.conduct span.va-button__content {
+                width: 64px;
+            }
+            button#awardbtn.conduct span.va-button__content .va-icon {
+                font-size: 9px!important;
+            }
+            #configtblmodal .va-modal__footer {
+                justify-content: end;
             }
             #awardsmodal .va-modal__container {
                 width: 800px;
             }
             #awardsmodal .va-modal__inner {
                 overflow: hidden;
+            }
+            #configtblmodal .va-modal__inner .va-card__content .va-divider {
+                opacity: 0.5;
+            }
+            #configtblmodal .va-modal__inner .va-card__content .va-divider .va-divider__text {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
             }
         </style>
     </head>
