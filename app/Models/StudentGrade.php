@@ -19,6 +19,6 @@ class StudentGrade extends Model
         'name',
         'email',
         'grade',
-        'status',
+        'conduct',
     ];
 }

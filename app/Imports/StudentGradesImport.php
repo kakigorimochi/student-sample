@@ -15,12 +15,19 @@ class StudentGradesImport implements ToModel, WithHeadingRow
     */
     public function model(array $row)
     {
-        return new StudentGrade([
+        if ($row['stud_no'] === null)
+        {
+            return null;
+        }
+
+        $grade = new StudentGrade([
             "stud_no" => $row['stud_no'],
             "name" => $row['name'],
             "email" => $row['email'],
             "grade" => $row['grade'],
-            "status" => $row['status']
+            "conduct" => $row['conduct']
         ]);
+
+        return $grade;
     }
 }

@@ -16,10 +16,10 @@ class CreateStudentGradesTable extends Migration
         Schema::create('student_grades', function (Blueprint $table) {
             $table->id();
             $table->string('stud_no', 20);
-            $table->string('name', 20);
-            $table->string('email', 255);
+            $table->string('name', 50);
+            $table->string('email', 50);
             $table->decimal('grade');
-            $table->tinyInteger('status');
+            $table->integer('conduct')->nullable();
             $table->timestamps();
         });
     }
