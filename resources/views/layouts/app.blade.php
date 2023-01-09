@@ -27,6 +27,9 @@
             #awardsmodal .va-modal__container {
                 width: 800px;
             }
+            #awardsmodal .va-modal__inner {
+                overflow: hidden;
+            }
         </style>
     </head>
     <body class="antialiased">

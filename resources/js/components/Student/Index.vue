@@ -1,5 +1,5 @@
 <template>
-    <Navbar></Navbar>
+    <Navbar />
 
     <div class="row align-center" style="height: 80vh; margin: 3em;">
         <div class="flex" style="width: 100%;">
@@ -115,6 +115,7 @@
         :cancel-text=null
     >
     <template #content="{ ok }">
+        <ConfettiExplosion />
         <va-image :ratio="16/9" src="img/certificate.png" />
         <h2 class="va-h2 awardname">{{ awardeeName }}</h2>
         <va-card-actions style="justify-content: flex-end;">
@@ -150,12 +151,13 @@
 
 <script>
 import Navbar from '@/components/Navbar'
+import ConfettiExplosion from "vue-confetti-explosion";
 
 import { defineComponent } from 'vue'
 
 export default defineComponent ({
     components: {
-        Navbar
+        Navbar, ConfettiExplosion
     },
     data () {
         const grade_columns = [
