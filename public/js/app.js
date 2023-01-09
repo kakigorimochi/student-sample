@@ -19532,9 +19532,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Navbar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/Navbar */ "./resources/js/components/Navbar.vue");
 /* harmony import */ var vue_confetti_explosion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-confetti-explosion */ "./node_modules/vue-confetti-explosion/dist/confetti-explosion.esm.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 
@@ -19544,6 +19548,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     ConfettiExplosion: vue_confetti_explosion__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
+    var _ref;
     var grade_columns = [{
       key: 'stud_no',
       label: 'Student No.'
@@ -19560,17 +19565,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     }, {
       key: 'status'
     }];
-    return {
+    return _ref = {
       studs: [],
       grade_columns: grade_columns,
       grade_perpage: 15,
       grade_currpage: 1,
       grade_file: '',
-      showUploadModal: false,
-      message: null,
-      showAwardsModal: false,
-      awardeeName: null
-    };
+      grade_minconduct: 85
+    }, _defineProperty(_ref, "grade_minconduct", 85), _defineProperty(_ref, "showUploadModal", false), _defineProperty(_ref, "message", null), _defineProperty(_ref, "showTblConfigModal", false), _defineProperty(_ref, "gradetblcfg_perpage", null), _defineProperty(_ref, "gradetblcfg_currpage", null), _defineProperty(_ref, "gradetblcfg_minconduct", null), _defineProperty(_ref, "showAwardsModal", false), _defineProperty(_ref, "awardee", null), _ref;
   },
   computed: {
     grade_pages: function grade_pages() {
@@ -19581,6 +19583,31 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.view_grade();
   },
   methods: {
+    gradetblcfg_save: function gradetblcfg_save() {
+      this.showTblConfigModal = false;
+      if (this.gradetblcfg_perpage != null && this.gradetblcfg_perpage != this.grade_perpage && this.gradetblcfg_perpage != 0) this.grade_perpage = this.gradetblcfg_perpage;
+      if (this.gradetblcfg_currpage != null && this.gradetblcfg_currpage != this.grade_currpage && this.gradetblcfg_currpage != 0) this.grade_currpage = this.gradetblcfg_currpage;
+      if (this.gradetblcfg_minconduct != null && this.gradetblcfg_minconduct != this.grade_minconduct && this.gradetblcfg_minconduct != 0) this.grade_minconduct = this.gradetblcfg_minconduct;
+      this.gradetblcfg_perpage = null;
+      this.gradetblcfg_currpage = null;
+      this.gradetblcfg_minconduct = null;
+      this.view_grade();
+    },
+    gradetblcfg_cancel: function gradetblcfg_cancel() {
+      this.gradetblcfg_perpage = null;
+      this.gradetblcfg_currpage = null;
+      this.gradetblcfg_minconduct = null;
+    },
+    validatetbl_maxperpage: function validatetbl_maxperpage() {
+      if (this.gradetblcfg_perpage > this.grade_perpage) this.gradetblcfg_perpage = this.studs.length;
+    },
+    validatetbl_maxcurrpage: function validatetbl_maxcurrpage() {
+      if (this.gradetblcfg_currpage > this.grade_currpage) this.gradetblcfg_currpage = this.grade_perpage && this.grade_perpage !== 0 ? Math.ceil(this.studs.length / this.grade_perpage) : this.studs.length;
+    },
+    validatetbl_maxminconduct: function validatetbl_maxminconduct() {
+      if (this.gradetblcfg_minconduct < 70) this.gradetblcfg_minconduct = 70;
+      if (this.gradetblcfg_minconduct > 100) this.gradetblcfg_minconduct = 100;
+    },
     view_grade: function view_grade() {
       var _this = this;
       axios({
@@ -19592,8 +19619,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         // award
         for (var i = 0; i < studs.length; i += 1) {
-          var award = i + 1;
-          studs[i]['award'] = award;
+          var top_awardee = [];
+          var conduct_awardee = [];
+          var awardee = [];
+
+          // top 10
+          var top_awards = i + 1;
+          top_awardee = top_awards;
+
+          // good conduct
+          if (studs[i]['conduct'] >= _this.grade_minconduct) conduct_awardee = true;
+
+          // who
+          awardee = studs[i]['name'];
+          studs[i]['award'] = [top_awardee, conduct_awardee, awardee];
         }
 
         // status
@@ -19633,9 +19672,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _this2.showUploadModal = true;
       });
     },
-    show_awards: function show_awards(value) {
+    show_awardee: function show_awardee(value) {
       this.showAwardsModal = true;
-      this.awardeeName = this.studs[value - 1].name;
+      this.awardee = value;
     }
   }
 }));
@@ -19739,7 +19778,7 @@ var _withScopeId = function _withScopeId(n) {
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.pushScopeId)("data-v-a120b6fa"), n = n(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.popScopeId)(), n;
 };
 var _hoisted_1 = {
-  "class": "row align-center",
+  "class": "row",
   style: {
     "height": "80vh",
     "margin": "3em"
@@ -19752,7 +19791,10 @@ var _hoisted_2 = {
   }
 };
 var _hoisted_3 = {
-  "class": "row"
+  "class": "row align-start",
+  style: {
+    "display": "block"
+  }
 };
 var _hoisted_4 = {
   "class": "flex md12"
@@ -19774,19 +19816,57 @@ var _hoisted_7 = {
 };
 var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Upload ");
 var _hoisted_9 = {
-  "class": "flex md12"
+  "class": "my-auto"
 };
-var _hoisted_10 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" N/A ");
-var _hoisted_11 = {
+var _hoisted_10 = {
+  "class": "flex md12 align-start"
+};
+var _hoisted_11 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", {
+    "class": "table-slots__head"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    colspan: "5"
+  }), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    colspan: "1"
+  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "TOP 10"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" / "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "CONDUCT")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    colspan: "1"
+  })], -1 /* HOISTED */);
+});
+var _hoisted_12 = {
   colspan: "8"
 };
-var _hoisted_12 = {
+var _hoisted_13 = {
   "class": "table-example--pagination"
 };
-var _hoisted_13 = {
+var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Table Configuration ");
+var _hoisted_15 = {
+  "class": "row"
+};
+var _hoisted_16 = {
+  "class": "flex md12 mt-3 mb-2"
+};
+var _hoisted_17 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    "class": "px-3"
+  }, "Items and Pagination", -1 /* HOISTED */);
+});
+var _hoisted_18 = {
+  "class": "row"
+};
+var _hoisted_19 = {
+  "class": "flex md12 mt-5 mb-2"
+};
+var _hoisted_20 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    "class": "px-3"
+  }, "Certificate Awards", -1 /* HOISTED */);
+});
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Cancel");
+var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Save");
+var _hoisted_23 = {
   "class": "va-h2 awardname"
 };
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Close");
+var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Close");
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Navbar = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Navbar");
   var _component_va_file_upload = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-file-upload");
@@ -19797,28 +19877,32 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_va_pagination = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-pagination");
   var _component_va_data_table = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-data-table");
   var _component_va_modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-modal");
+  var _component_va_card_title = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-title");
+  var _component_va_input = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-input");
+  var _component_va_divider = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-divider");
+  var _component_va_card_content = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-content");
+  var _component_va_card_actions = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-actions");
   var _component_ConfettiExplosion = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ConfettiExplosion");
   var _component_va_image = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-image");
-  var _component_va_card_actions = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-actions");
-  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Navbar), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_form, null, {
+  return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Navbar), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"item\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_form, null, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_file_upload, {
         modelValue: _ctx.grade_file,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
           return _ctx.grade_file = $event;
         }),
-        "hide-file-list": "",
         type: "single",
         "file-types": "xlsx",
-        "upload-button-text": "Select file"
+        "upload-button-text": "Select file",
+        "hide-file-list": ""
       }, null, 8 /* PROPS */, ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.grade_file ? _ctx.grade_file.name : "No file selected..."), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
         color: "info",
         gradient: "",
         "icon-right": "upload_file",
         "icon-color": "#ffffff50",
+        "class": "mr-3",
         style: {
-          "height": "36px",
-          "margin": "0!important"
+          "height": "36px"
         },
         onClick: _cache[1] || (_cache[1] = function ($event) {
           return _ctx.import_grade();
@@ -19828,18 +19912,35 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           return [_hoisted_8];
         }),
         _: 1 /* STABLE */
+      })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+        icon: "settings",
+        preset: "primary",
+        "icon-color": "#11111150",
+        style: {
+          "width": "36px",
+          "height": "36px"
+        },
+        onClick: _cache[2] || (_cache[2] = function ($event) {
+          return _ctx.showTblConfigModal = true;
+        })
       })])])];
     }),
-
     _: 1 /* STABLE */
-  })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_data_table, {
+  })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"item\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_data_table, {
+    id: "gradetbl",
     items: _ctx.studs,
     columns: _ctx.grade_columns,
     "per-page": _ctx.grade_perpage,
     "current-page": _ctx.grade_currpage,
-    animated: "",
-    hoverable: ""
+    "no-data-html": "No graded student(s) to show",
+    style: {
+      "margin-bottom": "3em"
+    },
+    animated: ""
   }, {
+    headerAppend: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [_hoisted_11];
+    }),
     "header(award)": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref) {
       var label = _ref.label;
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_chip, {
@@ -19858,42 +19959,47 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
     "cell(award)": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref2) {
       var value = _ref2.value;
-      return [value <= 10 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_va_button, {
-        key: 0,
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" top 10 "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
         id: "awardbtn",
         preset: "secondary",
         "border-color": "primary",
         size: "small",
+        "class": "top10",
         style: {
-          "height": "10px",
-          "margin": "0!important"
+          "height": "10px"
         },
         onClick: function onClick($event) {
-          return _ctx.show_awards(value);
-        }
+          return _ctx.show_awardee(value.split(',', 3).pop().toString());
+        },
+        disabled: value.split(',', 1).pop().toString() > 10
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" TOP  #" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(value), 1 /* TEXT */)];
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(value.split(',', 1).pop().toString() <= 10 ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A'), 1 /* TEXT */)];
         }),
 
         _: 2 /* DYNAMIC */
-      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true), value > 10 ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_va_button, {
-        key: 1,
+      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick", "disabled"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" good conduct "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
         id: "awardbtn",
+        icon: value.split(',', 2).pop().toString() == 'true' ? 'thumb_up' : '',
+        color: "secondary",
         preset: "secondary",
-        "border-color": "primary",
+        "border-color": "secondary",
         size: "small",
+        "class": "conduct ml-2",
         style: {
-          "height": "10px",
-          "margin": "0!important"
+          "height": "10px"
         },
-        disabled: ""
+        onClick: function onClick($event) {
+          return _ctx.show_awardee(value.split(',', 3).pop().toString());
+        },
+        disabled: value.split(',', 2).pop().toString() != 'true'
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [_hoisted_10];
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(value.split(',', 2).pop().toString() == 'true' ? 'CONDUCT' : 'N/ A'), 1 /* TEXT */)];
         }),
-        _: 1 /* STABLE */
-      })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
+
+        _: 2 /* DYNAMIC */
+      }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["icon", "onClick", "disabled"])];
     }),
     "cell(status)": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref3) {
       var value = _ref3.value;
@@ -19916,9 +20022,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
     }),
     bodyAppend: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_pagination, {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_pagination, {
         modelValue: _ctx.grade_currpage,
-        "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+        "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
           return _ctx.grade_currpage = $event;
         }),
         input: "",
@@ -19929,28 +20035,149 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["items", "columns", "per-page", "current-page"])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
     modelValue: _ctx.showUploadModal,
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return _ctx.showUploadModal = $event;
     }),
     message: _ctx.message,
     "cancel-text": null,
     title: "Notice"
   }, null, 8 /* PROPS */, ["modelValue", "message"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
-    modelValue: _ctx.showAwardsModal,
-    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
-      return _ctx.showAwardsModal = $event;
+    modelValue: _ctx.showTblConfigModal,
+    "onUpdate:modelValue": _cache[12] || (_cache[12] = function ($event) {
+      return _ctx.showTblConfigModal = $event;
     }),
-    id: "awardsmodal",
-    message: _ctx.message,
+    id: "configtblmodal",
     "no-padding": "",
-    "cancel-text": null
+    onCancel: _cache[13] || (_cache[13] = function ($event) {
+      return _ctx.gradetblcfg_cancel();
+    }),
+    onClickOutside: _cache[14] || (_cache[14] = function ($event) {
+      return _ctx.gradetblcfg_cancel();
+    })
   }, {
     content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref4) {
       var ok = _ref4.ok;
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_title, null, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [_hoisted_14];
+        }),
+        _: 1 /* STABLE */
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_content, null, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            "class": "mr-3",
+            type: "number",
+            placeholder: _ctx.grade_perpage.toString(),
+            label: "Students per page",
+            modelValue: _ctx.gradetblcfg_perpage,
+            "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+              return _ctx.gradetblcfg_perpage = $event;
+            }),
+            modelModifiers: {
+              number: true
+            },
+            min: "1",
+            max: _ctx.studs.length.toString(),
+            onBlur: _cache[6] || (_cache[6] = function ($event) {
+              return _ctx.validatetbl_maxperpage();
+            })
+          }, null, 8 /* PROPS */, ["placeholder", "modelValue", "max"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            type: "number",
+            placeholder: _ctx.grade_currpage.toString(),
+            label: "Current page",
+            modelValue: _ctx.gradetblcfg_currpage,
+            "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
+              return _ctx.gradetblcfg_currpage = $event;
+            }),
+            modelModifiers: {
+              number: true
+            },
+            min: "1",
+            max: _ctx.grade_pages.toString(),
+            onBlur: _cache[8] || (_cache[8] = function ($event) {
+              return _ctx.validatetbl_maxcurrpage();
+            })
+          }, null, 8 /* PROPS */, ["placeholder", "modelValue", "max"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_divider, {
+            orientation: "left"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_17];
+            }),
+            _: 1 /* STABLE */
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            type: "number",
+            placeholder: _ctx.grade_minconduct.toString(),
+            label: "Min. good conduct",
+            modelValue: _ctx.gradetblcfg_minconduct,
+            "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
+              return _ctx.gradetblcfg_minconduct = $event;
+            }),
+            modelModifiers: {
+              number: true
+            },
+            min: "70",
+            max: "100",
+            onBlur: _cache[10] || (_cache[10] = function ($event) {
+              return _ctx.validatetbl_maxminconduct();
+            })
+          }, null, 8 /* PROPS */, ["placeholder", "modelValue"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_divider, {
+            orientation: "left"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_20];
+            }),
+            _: 1 /* STABLE */
+          })];
+        }),
+
+        _: 1 /* STABLE */
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_actions, {
+        style: {
+          "justify-content": "flex-end"
+        }
+      }, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+            onClick: ok,
+            color: "rgb(118, 124, 136)",
+            preset: "secondary"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_21];
+            }),
+            _: 2 /* DYNAMIC */
+          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+            onClick: _cache[11] || (_cache[11] = function ($event) {
+              return _ctx.gradetblcfg_save();
+            })
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_22];
+            }),
+            _: 1 /* STABLE */
+          })];
+        }),
+
+        _: 2 /* DYNAMIC */
+      }, 1024 /* DYNAMIC_SLOTS */)];
+    }),
+
+    _: 1 /* STABLE */
+  }, 8 /* PROPS */, ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
+    modelValue: _ctx.showAwardsModal,
+    "onUpdate:modelValue": _cache[15] || (_cache[15] = function ($event) {
+      return _ctx.showAwardsModal = $event;
+    }),
+    id: "awardsmodal",
+    "no-padding": "",
+    blur: ""
+  }, {
+    content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref5) {
+      var ok = _ref5.ok;
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ConfettiExplosion), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_image, {
         ratio: 16 / 9,
-        src: "img/certificate.png"
-      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.awardeeName), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_actions, {
+        src: "img/certificate.jpg"
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.awardee), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_actions, {
         style: {
           "justify-content": "flex-end"
         }
@@ -19961,7 +20188,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             color: "warning"
           }, {
             "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-              return [_hoisted_14];
+              return [_hoisted_24];
             }),
             _: 2 /* DYNAMIC */
           }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])];
@@ -19971,7 +20198,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
 
     _: 1 /* STABLE */
-  }, 8 /* PROPS */, ["modelValue", "message"])], 64 /* STABLE_FRAGMENT */);
+  }, 8 /* PROPS */, ["modelValue"])], 64 /* STABLE_FRAGMENT */);
 }
 
 /***/ }),
@@ -21630,7 +21857,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".item[data-v-a120b6fa] {\n  border: 1px solid var(--va-background-border);\n  background-color: var(--va-background-primary);\n  text-align: center;\n}\n.table-example--pagination[data-v-a120b6fa] {\n  display: flex;\n  justify-content: center;\n}\n.va-button__content[data-v-a120b6fa] {\n  padding: 0;\n}\n.awardname[data-v-a120b6fa] {\n  position: absolute;\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  top: 32.5%;\n  left: 0;\n  right: 0;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".item[data-v-a120b6fa] {\n  border: 1px solid var(--va-background-border);\n  background-color: var(--va-background-primary);\n  text-align: center;\n}\n.table-slots__head[data-v-a120b6fa] {\n  color: var(--va-info);\n  background-color: var(--va-background-primary);\n  border-bottom: none;\n}\n.table-example--pagination[data-v-a120b6fa] {\n  display: flex;\n  justify-content: center;\n}\n.va-button__content[data-v-a120b6fa] {\n  padding: 0;\n}\n.awardname[data-v-a120b6fa] {\n  position: absolute;\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  top: 32.5%;\n  left: 0;\n  right: 0;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
