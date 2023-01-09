@@ -25,7 +25,6 @@
                                         color="info"
                                         gradient icon-right="upload_file"
                                         icon-color="#ffffff50"
-                                        class="mr-3 mb-2"
                                         style="height: 36px; margin: 0!important;"
                                         @click="import_grade()">
                                         Upload
@@ -42,21 +41,32 @@
                             :columns="grade_columns"
                             :per-page="grade_perpage"
                             :current-page="grade_currpage"
+                            animated
+                            hoverable
                         >
                             <template #header(award)="{ label }">
                                 <va-chip square icon="auto_awesome" color="info" size="small">{{ label }}</va-chip>
                             </template>
                             <template #cell(award)="{ value }">
                                 <va-button
-                                    v-if="value"
+                                    v-if="value <= 10"
                                     id="awardbtn"
                                     preset="secondary" border-color="primary"
                                     size="small"
-                                    class="mr-4 mb-2"
                                     style="height: 10px; margin: 0!important;"
                                     @click="show_awards(value)"
                                 >
-                                Top &nbsp;#{{ value }}
+                                TOP &nbsp;#{{ value }}
+                                </va-button>
+                                <va-button
+                                    v-if="value > 10"
+                                    id="awardbtn"
+                                    preset="secondary" border-color="primary"
+                                    size="small"
+                                    style="height: 10px; margin: 0!important;"
+                                    disabled
+                                >
+                                N/A
                                 </va-button>
                             </template>
 
@@ -149,7 +159,7 @@ export default defineComponent ({
     },
     data () {
         const grade_columns = [
-        { key: 'stud_no' },
+        { key: 'stud_no', label: 'Student No.' },
         { key: 'name' },
         { key: 'email' },
         { key: 'grade' },
@@ -190,7 +200,7 @@ export default defineComponent ({
                 let studs = response.data;
 
                 // award
-                for (let i = 0; i < 10; i += 1) {
+                for (let i = 0; i < studs.length; i += 1) {
                     var award = i + 1;
                     studs[i]['award'] = award;
                 }

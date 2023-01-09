@@ -21,7 +21,8 @@
                 font-family: 'Nunito', sans-serif;
             }
             button#awardbtn span.va-button__content {
-                padding: 2px 6px;
+                font-size: 11px;
+                padding: 0 5px;
             }
             #awardsmodal .va-modal__container {
                 width: 800px;
