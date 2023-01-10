@@ -17,9 +17,9 @@
         </style>
 
         <style>
-            body {
+            /* body {
                 font-family: 'Nunito', sans-serif;
-            }
+            } */
             #gradetbl .no-data {
                 padding: 25px 0;
             }
@@ -49,16 +49,17 @@
                 font-size: 11px;
                 padding: 0 5px;
             }
-            button#awardbtn.top10 span.va-button__content {
-                width: 44px;
+            button#awardbtn.achievers span.va-button__content {
+                width: 42px;
             }
             button#awardbtn.conduct span.va-button__content {
                 width: 64px;
             }
             button#awardbtn.conduct span.va-button__content .va-icon {
-                font-size: 9px!important;
+                font-size: 7px!important;
             }
-            #configtblmodal .va-modal__footer {
+            #configtblmodal .va-modal__footer,
+            #configdbmodal .va-modal__footer {
                 justify-content: end;
             }
             #awardsmodal .va-modal__container {
@@ -67,13 +68,35 @@
             #awardsmodal .va-modal__inner {
                 overflow: hidden;
             }
-            #configtblmodal .va-modal__inner .va-card__content .va-divider {
+            #configtblmodal .va-modal__inner .va-card__content .va-divider,
+            #configdbmodal .va-modal__inner .va-card__content .va-divider {
                 opacity: 0.5;
             }
-            #configtblmodal .va-modal__inner .va-card__content .va-divider .va-divider__text {
+            #configtblmodal .va-modal__inner .va-card__content .va-divider .va-divider__text,
+            #configdbmodal .va-modal__inner .va-card__content .va-divider .va-divider__text {
                 font-size: 10px;
                 text-transform: uppercase;
                 letter-spacing: 0.3px;
+            }
+            #configdbmodal .va-modal__dialog {
+                width: 500px;
+            }
+            #configdbmodal .va-modal__inner .va-card__actions .va-checkbox .va-checkbox__input-container .va-checkbox__square {
+                height: 18px;
+                min-width: 18px;
+                width: 18px;
+            }
+            #configdbmodal .va-modal__inner .va-card__actions .va-checkbox .va-checkbox__input-container .va-checkbox__label {
+                font-size: 14px;
+            }
+            #configdbmodal .va-modal__inner .va-card__actions .va-checkbox--error .va-message-list {
+                position: absolute;
+                font-size: 10px;
+            }
+            #configdbmodal .va-modal__inner .va-card__actions .va-checkbox--error .va-message-list .va-icon {
+                font-size: 13px;
+                height: 13px;
+                line-height: 13px;
             }
         </style>
     </head>

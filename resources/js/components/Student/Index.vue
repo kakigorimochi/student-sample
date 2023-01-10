@@ -9,40 +9,57 @@
                     <!-- <div class="item"> -->
                         <va-form>
                             <div class="row" style="text-align: center;">
-                                <div>
-                                    <va-file-upload
-                                        v-model="grade_file"
-                                        type="single"
-                                        file-types="xlsx"
-                                        upload-button-text="Select file"
-                                        hide-file-list
-                                    />
+                                <div class="flex">
+                                    <div>
+                                        <va-file-upload
+                                            v-model="grade_file"
+                                            type="single"
+                                            file-types="xlsx"
+                                            upload-button-text="Select file"
+                                            hide-file-list
+                                        />
+                                    </div>
+                                    <div class="ml-5 my-auto align-center" style="margin-right: 105px;">
+                                        {{ grade_file ? grade_file.name : "No file selected..." }}
+                                    </div>
+                                    <div class="my-auto">
+                                        <va-button
+                                            color="info"
+                                            gradient
+                                            icon-right="upload_file"
+                                            icon-color="#ffffff50"
+                                            class="mr-3"
+                                            style="height: 36px;"
+                                            @click="import_grade()"
+                                        >
+                                            Upload
+                                        </va-button>
+                                    </div>
                                 </div>
-                                <div class="ml-5 my-auto align-center" style="margin-right: 105px;">
-                                    {{ grade_file ? grade_file.name : "No file selected..." }}
-                                </div>
-                                <div class="my-auto">
-                                    <va-button
-                                        color="info"
-                                        gradient
-                                        icon-right="upload_file"
-                                        icon-color="#ffffff50"
-                                        class="mr-3"
-                                        style="height: 36px;"
-                                        @click="import_grade()"
-                                    >
-                                        Upload
-                                    </va-button>
-                                </div>
-                                <div class="my-auto">
-                                    <va-button
-                                        icon="settings"
-                                        preset="primary"
-                                        icon-color="#11111150"
-                                        style="width: 36px; height: 36px;"
-                                        @click="showTblConfigModal = true"
-                                    >
-                                    </va-button>
+                                <div class="flex" style="margin-left: auto;">
+                                    <div class="my-auto">
+                                        <va-button
+                                            icon="table_view"
+                                            preset="secondary"
+                                            icon-color="#11111180"
+                                            class="mr-3"
+                                            pressed-behavior="mask" :pressed-opacity="1" pressed-mask-color="warning"
+                                            style="width: 36px; height: 36px;"
+                                            @click="showTblConfigModal = true"
+                                        >
+                                        </va-button>
+                                    </div>
+                                    <div class="my-auto">
+                                        <va-button
+                                            icon="repartition"
+                                            preset="secondary"
+                                            icon-color="#11111180"
+                                            pressed-behavior="mask" :pressed-opacity="1" pressed-mask-color="warning"
+                                            style="width: 36px; height: 36px;"
+                                            @click="showDbConfigModal = true"
+                                        >
+                                        </va-button>
+                                    </div>
                                 </div>
                             </div>
                         </va-form>
@@ -50,6 +67,7 @@
                 </div>
                 <div class="flex md12 align-start">
                     <div>
+                        <va-divider />
                     <!-- <div class="item"> -->
                         <va-data-table
                             id="gradetbl"
@@ -64,7 +82,7 @@
                             <template #headerAppend>
                                 <tr class="table-slots__head">
                                     <th colspan="5"></th>
-                                    <th colspan="1"><span>TOP 10</span> / <span>CONDUCT</span></th>
+                                    <th colspan="1"><span>TOP {{ awardachievers_count }}</span> / <span>CONDUCT</span></th>
                                     <th colspan="1"></th>
                                 </tr>
                             </template>
@@ -73,17 +91,17 @@
                                 <va-chip square icon="auto_awesome" color="info" size="small">{{ label }}</va-chip>
                             </template>
                             <template #cell(award)="{ value }">
-                                <!-- top 10 -->
+                                <!-- achievers -->
                                 <va-button
                                     id="awardbtn"
                                     preset="secondary" border-color="primary"
                                     size="small"
-                                    class="top10"
+                                    class="achievers"
                                     style="height: 10px;"
-                                    @click="show_awardee(value.split(',', 3).pop().toString())"
-                                    :disabled="value.split(',', 1).pop().toString() > 10"
+                                    @click="show_awardee(value.split(',', 3).pop().toString(), value.split(',', 1).pop().toString())"
+                                    :disabled="value.split(',', 1).pop().toString() > awardachievers_count"
                                 >
-                                    {{ value.split(',', 1).pop().toString() <= 10 ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A' }}
+                                    {{ value.split(',', 1).pop().toString() <= awardachievers_count ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A' }}
                                 </va-button>
 
                                 <!-- good conduct -->
@@ -95,7 +113,7 @@
                                     size="small"
                                     class="conduct ml-2"
                                     style="height: 10px;"
-                                    @click="show_awardee(value.split(',', 3).pop().toString())"
+                                    @click="show_awardee(value.split(',', 3).pop().toString(), value.split(',', 2).pop().toString())"
                                     :disabled="value.split(',', 2).pop().toString() != 'true'"
                                 >
                                     {{ value.split(',', 2).pop().toString() == 'true' ? 'CONDUCT' : 'N/ A' }}
@@ -138,15 +156,14 @@
         </div>
     </div>
 
-    <va-modal v-model="showUploadModal" :message="message" :cancel-text=null title="Notice" />
+    <va-modal v-model="showUploadModal" :message="grade_fileup_message" :cancel-text=null title="Notice" />
     <va-modal
         v-model="showTblConfigModal"
         id="configtblmodal"
         no-padding
-        @cancel="gradetblcfg_cancel()"
         @click-outside="gradetblcfg_cancel()"
     >
-        <template #content="{ ok }">
+        <template #content>
             <va-card-title>
                 Table Configuration
             </va-card-title>
@@ -154,7 +171,7 @@
                 <div class="row">
                     <div class="flex md12 mt-3 mb-2">
                         <va-input
-                            class="mr-3"
+                            class="mr-2"
                             type="number"
                             :placeholder="grade_perpage.toString()"
                             label="Students per page"
@@ -178,7 +195,38 @@
                     <span class="px-3">Items and Pagination</span>
                 </va-divider>
                 <div class="row">
-                    <div class="flex md12 mt-5 mb-2">
+                    <div class="flex md12 mt-4 mb-2">
+                        <va-input
+                            type="number"
+                            :placeholder="awardachievers_count.toString()"
+                            label="Top achievers"
+                            v-model.number="gradetblcfg_achievers"
+                            min="1"
+                            @blur="validatetbl_awardachievers()"
+                        />
+                    </div>
+                    <div class="flex md12 mb-2">
+                        <va-input
+                            class="mr-2"
+                            type="number"
+                            :placeholder="grade_minpassgrd.toString()"
+                            label="Min. passing grade"
+                            v-model.number="gradetblcfg_minpassgrd"
+                            min="70"
+                            max="100"
+                            @blur="validatetbl_maxminpassgrd()"
+                        />
+                        <va-input
+                            type="number"
+                            :placeholder="grade_warnoffset.toString()"
+                            label="Warn offset from min. passing grade.."
+                            v-model.number="gradetblcfg_warnoffset"
+                            min="1"
+                            max="10"
+                            @blur="validatetbl_maxwarnoffset()"
+                        />
+                    </div>
+                    <div class="flex md12 mb-2">
                         <va-input
                             type="number"
                             :placeholder="grade_minconduct.toString()"
@@ -195,8 +243,55 @@
                 </va-divider>
             </va-card-content>
             <va-card-actions style="justify-content: flex-end;">
-                <va-button @click="ok" color="rgb(118, 124, 136)" preset="secondary">Cancel</va-button>
-                <va-button @click="gradetblcfg_save()">Save</va-button>
+                <va-button @click="gradetblcfg_cancel()" color="rgb(118, 124, 136)" preset="secondary">Cancel</va-button>
+                <va-button @click="gradetblcfg_save()" :disabled="!gradetblcfg_modified">Save</va-button>
+            </va-card-actions>
+        </template>
+    </va-modal>
+    <va-modal
+        v-model="showDbConfigModal"
+        id="configdbmodal"
+        no-padding
+        @click-outside="gradedbcfg_cancel()"
+    >
+        <template #content>
+            <va-card-title>
+                Database Configuration
+            </va-card-title>
+            <va-card-content>
+                <div class="row">
+                    <div class="flex md12 mt-3 mb-2">
+                        <va-switch
+                            v-model="gradedbdata_truncate"
+                            label="Clear Data"
+                            size="small"
+                        />
+                        <va-switch
+                            v-model="gradedbdata_seed"
+                            label="Re-initialize Data"
+                            size="small"
+                            :disabled="!gradedbdata_truncate"
+                        />
+                    </div>
+                </div>
+                <va-divider orientation="left">
+                    <span class="px-3">Data Conditioning</span>
+                </va-divider>
+            </va-card-content>
+            <va-card-actions>
+                <div class="flex">
+                    <va-checkbox
+                        v-if="gradedbdata_truncate"
+                        v-model="gradedbdata_agree"
+                        :label="'On commit, this action cannot be undone'"
+                        error-messages="Please agree to the terms"
+                        :error="!gradedbdata_agree"
+                    />
+                </div>
+                <div class="flex" style="margin-left: auto;">
+                    <va-button @click="gradedbcfg_cancel()" color="rgb(118, 124, 136)" preset="secondary">Cancel</va-button>
+                    <va-button @click="gradedbcfg_commit()" :disabled="!gradedbdata_agree">Commit</va-button>
+                </div>
             </va-card-actions>
         </template>
     </va-modal>
@@ -208,10 +303,11 @@
     >
         <template #content="{ ok }">
             <ConfettiExplosion />
-            <va-image :ratio="16/9" src="img/certificate.jpg" />
+            <!-- <va-image v-if="awardee !== ''" :ratio="16/9" src="img/cert_acadex.jpg" /> -->
+            <va-image :ratio="16/9" :src="awardtype == 'true' ? 'img/cert_gcondt.jpg' : 'img/cert_acadex.jpg'" />
             <h2 class="va-h2 awardname">{{ awardee }}</h2>
-            <va-card-actions style="justify-content: flex-end;">
-                <va-button @click="ok" color="warning">Close</va-button>
+            <va-card-actions style="justify-content: flex-end; padding: 16px;">
+                <va-button @click="ok" size="small" color="warning" style="padding: 2px 20px;">Close</va-button>
             </va-card-actions>
         </template>
     </va-modal>
@@ -248,7 +344,7 @@
 
 <script>
 import Navbar from '@/components/Navbar'
-import ConfettiExplosion from "vue-confetti-explosion";
+import ConfettiExplosion from "vue-confetti-explosion"
 
 import { defineComponent } from 'vue'
 
@@ -273,15 +369,29 @@ export default defineComponent ({
             grade_perpage: 15,
             grade_currpage: 1,
             grade_file: '',
-            grade_minconduct: 85,grade_minconduct: 85,
+            grade_minpassgrd: 80,
+            grade_warnoffset: 5,
+            grade_minconduct: 85,
             showUploadModal: false,
-            message: null,
+            grade_fileup_message: null,
             showTblConfigModal: false,
             gradetblcfg_perpage: null,
             gradetblcfg_currpage: null,
+            gradetblcfg_minpassgrd: null,
+            gradetblcfg_warnoffset: null,
             gradetblcfg_minconduct: null,
+            gradetblcfg_achievers: null,
+            gradetblcfg_modified: false,
             showAwardsModal: false,
-            awardee: null
+            awardee: null,
+            awardtype: null,
+            awardachievers_count: 10,
+            showDbConfigModal: false,
+            gradedbdata_message: null,
+            gradedbdata_indicator: null,
+            gradedbdata_truncate: false,
+            gradedbdata_seed: false,
+            gradedbdata_agree: false
         }
     },
     computed: {
@@ -295,6 +405,37 @@ export default defineComponent ({
         this.view_grade();
     },
     methods: {
+        gradedbcfg_commit() {
+            axios({
+                method: 'POST',
+                type: 'JSON',
+                url: '/condition_grades_db',
+                data: { agreed: this.gradedbdata_agree, truncate: this.gradedbdata_truncate, seed: this.gradedbdata_seed }
+            }).then(response => {
+                this.gradedbdata_message = response.data.message;
+                if (response.data.status == 1) this.gradedbdata_indicator = 'warning';
+                else this.gradedbdata_indicator = 'danger';
+
+                this.$vaToast.init({message: this.gradedbdata_message, color: this.gradedbdata_indicator});
+
+                this.view_grade();
+            }).catch(err => {
+                this.gradedbdata_message = 'Something went wrong'
+            });
+
+            this.gradedbdata_truncate = null;
+            this.gradedbdata_seed = null;
+            this.gradedbdata_agree = null;
+
+            this.showDbConfigModal = false;
+        },
+        gradedbcfg_cancel() {
+            this.gradedbdata_truncate = null;
+            this.gradedbdata_seed = null;
+            this.gradedbdata_agree = null;
+
+            this.showDbConfigModal = false;
+        },
         gradetblcfg_save() {
             this.showTblConfigModal = false;
 
@@ -303,40 +444,106 @@ export default defineComponent ({
                 && this.gradetblcfg_perpage != 0)
                 this.grade_perpage = this.gradetblcfg_perpage;
 
+            this.gradetblcfg_perpage = null;
+
             if (this.gradetblcfg_currpage != null
                 && this.gradetblcfg_currpage != this.grade_currpage
                 && this.gradetblcfg_currpage != 0)
                 this.grade_currpage = this.gradetblcfg_currpage;
+
+            this.gradetblcfg_currpage = null;
+
+            if (this.gradetblcfg_minpassgrd != null
+                && this.gradetblcfg_minpassgrd != this.grade_minpassgrd
+                && this.gradetblcfg_minpassgrd != 0)
+                this.grade_minpassgrd = this.gradetblcfg_minpassgrd;
+
+            this.gradetblcfg_minpassgrd = null;
+
+            if (this.gradetblcfg_warnoffset != null
+                && this.gradetblcfg_warnoffset != this.grade_warnoffset
+                && this.gradetblcfg_warnoffset != 0)
+                this.grade_warnoffset = this.gradetblcfg_warnoffset;
+
+            this.gradetblcfg_warnoffset = null;
 
             if (this.gradetblcfg_minconduct != null
                 && this.gradetblcfg_minconduct != this.grade_minconduct
                 && this.gradetblcfg_minconduct != 0)
                 this.grade_minconduct = this.gradetblcfg_minconduct;
 
-            this.gradetblcfg_perpage = null;
-            this.gradetblcfg_currpage = null;
             this.gradetblcfg_minconduct = null;
 
+            if (this.gradetblcfg_achievers != null
+                && this.gradetblcfg_achievers != this.awardachievers_count
+                && this.gradetblcfg_achievers != 0)
+                this.awardachievers_count = this.gradetblcfg_achievers;
+
+            this.gradetblcfg_achievers = null;
+
+            this.gradetblcfg_modified = false;
             this.view_grade();
         },
         gradetblcfg_cancel() {
             this.gradetblcfg_perpage = null;
             this.gradetblcfg_currpage = null;
+            this.gradetblcfg_minpassgrd = null;
+            this.gradetblcfg_warnoffset = null;
             this.gradetblcfg_minconduct = null;
+            this.gradetblcfg_achievers = null;
+
+            this.gradetblcfg_modified = false;
+            this.showTblConfigModal = false;
         },
         validatetbl_maxperpage() {
+            this.gradetblcfg_modified = true;
+
             if (this.gradetblcfg_perpage > this.grade_perpage)
                 this.gradetblcfg_perpage = this.studs.length;
         },
         validatetbl_maxcurrpage() {
+            this.gradetblcfg_modified = true;
+
             if (this.gradetblcfg_currpage > this.grade_currpage)
                 this.gradetblcfg_currpage = (this.grade_perpage && this.grade_perpage !== 0)
                     ? Math.ceil(this.studs.length / this.grade_perpage)
                     : this.studs.length;
         },
+        validatetbl_maxminpassgrd() {
+            this.gradetblcfg_modified = true;
+
+            if (this.gradetblcfg_minpassgrd < 70)
+                this.gradetblcfg_minpassgrd = (this.grade_minpassgrd > this.gradetblcfg_minpassgrd) ? this.gradetblcfg_minpassgrd : 70;
+
+            if (this.gradetblcfg_minpassgrd > 100) this.gradetblcfg_minpassgrd = 100;
+        },
+        validatetbl_maxwarnoffset() {
+            this.gradetblcfg_modified = true;
+
+            let setwarn_offset = 0;
+
+            if (this.gradetblcfg_minpassgrd == null)
+                setwarn_offset = this.grade_minpassgrd - this.gradetblcfg_warnoffset;
+            else
+                setwarn_offset = this.gradetblcfg_minpassgrd - this.gradetblcfg_warnoffset;
+
+            if (setwarn_offset < 70) {
+                let subwarn_offset = this.gradetblcfg_minpassgrd - this.gradetblcfg_warnoffset;
+                let newwarn_offset = ((this.gradetblcfg_minpassgrd == null) ? this.grade_minpassgrd : this.gradetblcfg_minpassgrd) - (setwarn_offset + (70 - subwarn_offset));
+
+                this.gradetblcfg_warnoffset = newwarn_offset;
+            }
+        },
         validatetbl_maxminconduct() {
-            if (this.gradetblcfg_minconduct < 70) this.gradetblcfg_minconduct = 70;
+            this.gradetblcfg_modified = true;
+
+            if (this.gradetblcfg_minconduct < 70)
+                this.gradetblcfg_minconduct = (this.grade_minconduct > this.gradetblcfg_minconduct) ? this.gradetblcfg_minconduct : 70;
+
             if (this.gradetblcfg_minconduct > 100) this.gradetblcfg_minconduct = 100;
+        },
+        validatetbl_awardachievers() {
+            this.gradetblcfg_modified = true;
         },
         view_grade() {
             axios({
@@ -352,7 +559,7 @@ export default defineComponent ({
                     let conduct_awardee = [];
                     let awardee = [];
 
-                    // top 10
+                    // achievers
                     var top_awards = i + 1;
                     top_awardee = top_awards;
 
@@ -367,9 +574,9 @@ export default defineComponent ({
 
                 // status
                 for (const stud of studs) {
-                    if (stud['grade'] > 80) stud['status'] = 1;
-                    else if (stud['grade'] >= 75) stud['status'] = 2;
-                    else if (stud['grade'] < 75) stud['status'] = 3;
+                    if (stud['grade'] > this.grade_minpassgrd) stud['status'] = 1;
+                    else if (stud['grade'] >= this.grade_minpassgrd - this.grade_warnoffset) stud['status'] = 2;
+                    else if (stud['grade'] < this.grade_minpassgrd - this.grade_warnoffset) stud['status'] = 3;
                     else stud['status'] = 0;
                 }
 
@@ -387,18 +594,20 @@ export default defineComponent ({
                 url: '/import_grades',
                 data: form
             }).then(response => {
-                this.message = response.data.message;
+                this.grade_fileup_message = response.data.message;
                 this.showUploadModal = true;
 
                 this.view_grade();
             }).catch(err => {
-                this.message = 'Something went wrong'
+                this.grade_fileup_message = 'Something went wrong'
                 this.showUploadModal = true;
             });
         },
-        show_awardee(value) {
+        show_awardee(name, value) {
             this.showAwardsModal = true;
-            this.awardee = value;
+
+            this.awardee = name;
+            this.awardtype = value;
         }
     }
 })
