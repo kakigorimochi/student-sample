@@ -574,7 +574,7 @@ export default defineComponent ({
 
                 // status
                 for (const stud of studs) {
-                    if (stud['grade'] > this.grade_minpassgrd) stud['status'] = 1;
+                    if (stud['grade'] >= this.grade_minpassgrd) stud['status'] = 1;
                     else if (stud['grade'] >= this.grade_minpassgrd - this.grade_warnoffset) stud['status'] = 2;
                     else if (stud['grade'] < this.grade_minpassgrd - this.grade_warnoffset) stud['status'] = 3;
                     else stud['status'] = 0;

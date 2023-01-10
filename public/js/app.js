@@ -19724,7 +19724,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var stud = _step.value;
-            if (stud['grade'] > _this2.grade_minpassgrd) stud['status'] = 1;else if (stud['grade'] >= _this2.grade_minpassgrd - _this2.grade_warnoffset) stud['status'] = 2;else if (stud['grade'] < _this2.grade_minpassgrd - _this2.grade_warnoffset) stud['status'] = 3;else stud['status'] = 0;
+            if (stud['grade'] >= _this2.grade_minpassgrd) stud['status'] = 1;else if (stud['grade'] >= _this2.grade_minpassgrd - _this2.grade_warnoffset) stud['status'] = 2;else if (stud['grade'] < _this2.grade_minpassgrd - _this2.grade_warnoffset) stud['status'] = 3;else stud['status'] = 0;
           }
         } catch (err) {
           _iterator.e(err);
