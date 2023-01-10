@@ -18,3 +18,4 @@ use App\Http\Controllers\StudentController;
 Route::get('/', [StudentController::class, 'index']);
 Route::get('/view_grades', [StudentController::class, 'view_grades']);
 Route::post('/import_grades', [StudentController::class, 'import_grades']);
+Route::post('/condition_grades_db', [StudentController::class, 'condition_grades_db']);

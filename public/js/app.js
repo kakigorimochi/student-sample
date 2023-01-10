@@ -19532,13 +19532,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_Navbar__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @/components/Navbar */ "./resources/js/components/Navbar.vue");
 /* harmony import */ var vue_confetti_explosion__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vue-confetti-explosion */ "./node_modules/vue-confetti-explosion/dist/confetti-explosion.esm.js");
 /* harmony import */ var vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm-bundler.js");
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
-function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 
 
 
@@ -19548,7 +19544,6 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     ConfettiExplosion: vue_confetti_explosion__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
-    var _ref;
     var grade_columns = [{
       key: 'stud_no',
       label: 'Student No.'
@@ -19565,14 +19560,36 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     }, {
       key: 'status'
     }];
-    return _ref = {
+    return {
       studs: [],
       grade_columns: grade_columns,
       grade_perpage: 15,
       grade_currpage: 1,
       grade_file: '',
-      grade_minconduct: 85
-    }, _defineProperty(_ref, "grade_minconduct", 85), _defineProperty(_ref, "showUploadModal", false), _defineProperty(_ref, "message", null), _defineProperty(_ref, "showTblConfigModal", false), _defineProperty(_ref, "gradetblcfg_perpage", null), _defineProperty(_ref, "gradetblcfg_currpage", null), _defineProperty(_ref, "gradetblcfg_minconduct", null), _defineProperty(_ref, "showAwardsModal", false), _defineProperty(_ref, "awardee", null), _ref;
+      grade_minpassgrd: 80,
+      grade_warnoffset: 5,
+      grade_minconduct: 85,
+      showUploadModal: false,
+      grade_fileup_message: null,
+      showTblConfigModal: false,
+      gradetblcfg_perpage: null,
+      gradetblcfg_currpage: null,
+      gradetblcfg_minpassgrd: null,
+      gradetblcfg_warnoffset: null,
+      gradetblcfg_minconduct: null,
+      gradetblcfg_achievers: null,
+      gradetblcfg_modified: false,
+      showAwardsModal: false,
+      awardee: null,
+      awardtype: null,
+      awardachievers_count: 10,
+      showDbConfigModal: false,
+      gradedbdata_message: null,
+      gradedbdata_indicator: null,
+      gradedbdata_truncate: false,
+      gradedbdata_seed: false,
+      gradedbdata_agree: false
+    };
   },
   computed: {
     grade_pages: function grade_pages() {
@@ -19583,33 +19600,99 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     this.view_grade();
   },
   methods: {
+    gradedbcfg_commit: function gradedbcfg_commit() {
+      var _this = this;
+      axios({
+        method: 'POST',
+        type: 'JSON',
+        url: '/condition_grades_db',
+        data: {
+          agreed: this.gradedbdata_agree,
+          truncate: this.gradedbdata_truncate,
+          seed: this.gradedbdata_seed
+        }
+      }).then(function (response) {
+        _this.gradedbdata_message = response.data.message;
+        if (response.data.status == 1) _this.gradedbdata_indicator = 'warning';else _this.gradedbdata_indicator = 'danger';
+        _this.$vaToast.init({
+          message: _this.gradedbdata_message,
+          color: _this.gradedbdata_indicator
+        });
+        _this.view_grade();
+      })["catch"](function (err) {
+        _this.gradedbdata_message = 'Something went wrong';
+      });
+      this.gradedbdata_truncate = null;
+      this.gradedbdata_seed = null;
+      this.gradedbdata_agree = null;
+      this.showDbConfigModal = false;
+    },
+    gradedbcfg_cancel: function gradedbcfg_cancel() {
+      this.gradedbdata_truncate = null;
+      this.gradedbdata_seed = null;
+      this.gradedbdata_agree = null;
+      this.showDbConfigModal = false;
+    },
     gradetblcfg_save: function gradetblcfg_save() {
       this.showTblConfigModal = false;
       if (this.gradetblcfg_perpage != null && this.gradetblcfg_perpage != this.grade_perpage && this.gradetblcfg_perpage != 0) this.grade_perpage = this.gradetblcfg_perpage;
-      if (this.gradetblcfg_currpage != null && this.gradetblcfg_currpage != this.grade_currpage && this.gradetblcfg_currpage != 0) this.grade_currpage = this.gradetblcfg_currpage;
-      if (this.gradetblcfg_minconduct != null && this.gradetblcfg_minconduct != this.grade_minconduct && this.gradetblcfg_minconduct != 0) this.grade_minconduct = this.gradetblcfg_minconduct;
       this.gradetblcfg_perpage = null;
+      if (this.gradetblcfg_currpage != null && this.gradetblcfg_currpage != this.grade_currpage && this.gradetblcfg_currpage != 0) this.grade_currpage = this.gradetblcfg_currpage;
       this.gradetblcfg_currpage = null;
+      if (this.gradetblcfg_minpassgrd != null && this.gradetblcfg_minpassgrd != this.grade_minpassgrd && this.gradetblcfg_minpassgrd != 0) this.grade_minpassgrd = this.gradetblcfg_minpassgrd;
+      this.gradetblcfg_minpassgrd = null;
+      if (this.gradetblcfg_warnoffset != null && this.gradetblcfg_warnoffset != this.grade_warnoffset && this.gradetblcfg_warnoffset != 0) this.grade_warnoffset = this.gradetblcfg_warnoffset;
+      this.gradetblcfg_warnoffset = null;
+      if (this.gradetblcfg_minconduct != null && this.gradetblcfg_minconduct != this.grade_minconduct && this.gradetblcfg_minconduct != 0) this.grade_minconduct = this.gradetblcfg_minconduct;
       this.gradetblcfg_minconduct = null;
+      if (this.gradetblcfg_achievers != null && this.gradetblcfg_achievers != this.awardachievers_count && this.gradetblcfg_achievers != 0) this.awardachievers_count = this.gradetblcfg_achievers;
+      this.gradetblcfg_achievers = null;
+      this.gradetblcfg_modified = false;
       this.view_grade();
     },
     gradetblcfg_cancel: function gradetblcfg_cancel() {
       this.gradetblcfg_perpage = null;
       this.gradetblcfg_currpage = null;
+      this.gradetblcfg_minpassgrd = null;
+      this.gradetblcfg_warnoffset = null;
       this.gradetblcfg_minconduct = null;
+      this.gradetblcfg_achievers = null;
+      this.gradetblcfg_modified = false;
+      this.showTblConfigModal = false;
     },
     validatetbl_maxperpage: function validatetbl_maxperpage() {
+      this.gradetblcfg_modified = true;
       if (this.gradetblcfg_perpage > this.grade_perpage) this.gradetblcfg_perpage = this.studs.length;
     },
     validatetbl_maxcurrpage: function validatetbl_maxcurrpage() {
+      this.gradetblcfg_modified = true;
       if (this.gradetblcfg_currpage > this.grade_currpage) this.gradetblcfg_currpage = this.grade_perpage && this.grade_perpage !== 0 ? Math.ceil(this.studs.length / this.grade_perpage) : this.studs.length;
     },
+    validatetbl_maxminpassgrd: function validatetbl_maxminpassgrd() {
+      this.gradetblcfg_modified = true;
+      if (this.gradetblcfg_minpassgrd < 70) this.gradetblcfg_minpassgrd = this.grade_minpassgrd > this.gradetblcfg_minpassgrd ? this.gradetblcfg_minpassgrd : 70;
+      if (this.gradetblcfg_minpassgrd > 100) this.gradetblcfg_minpassgrd = 100;
+    },
+    validatetbl_maxwarnoffset: function validatetbl_maxwarnoffset() {
+      this.gradetblcfg_modified = true;
+      var setwarn_offset = 0;
+      if (this.gradetblcfg_minpassgrd == null) setwarn_offset = this.grade_minpassgrd - this.gradetblcfg_warnoffset;else setwarn_offset = this.gradetblcfg_minpassgrd - this.gradetblcfg_warnoffset;
+      if (setwarn_offset < 70) {
+        var subwarn_offset = this.gradetblcfg_minpassgrd - this.gradetblcfg_warnoffset;
+        var newwarn_offset = (this.gradetblcfg_minpassgrd == null ? this.grade_minpassgrd : this.gradetblcfg_minpassgrd) - (setwarn_offset + (70 - subwarn_offset));
+        this.gradetblcfg_warnoffset = newwarn_offset;
+      }
+    },
     validatetbl_maxminconduct: function validatetbl_maxminconduct() {
-      if (this.gradetblcfg_minconduct < 70) this.gradetblcfg_minconduct = 70;
+      this.gradetblcfg_modified = true;
+      if (this.gradetblcfg_minconduct < 70) this.gradetblcfg_minconduct = this.grade_minconduct > this.gradetblcfg_minconduct ? this.gradetblcfg_minconduct : 70;
       if (this.gradetblcfg_minconduct > 100) this.gradetblcfg_minconduct = 100;
     },
+    validatetbl_awardachievers: function validatetbl_awardachievers() {
+      this.gradetblcfg_modified = true;
+    },
     view_grade: function view_grade() {
-      var _this = this;
+      var _this2 = this;
       axios({
         method: 'GET',
         type: 'JSON',
@@ -19623,12 +19706,12 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
           var conduct_awardee = [];
           var awardee = [];
 
-          // top 10
+          // achievers
           var top_awards = i + 1;
           top_awardee = top_awards;
 
           // good conduct
-          if (studs[i]['conduct'] >= _this.grade_minconduct) conduct_awardee = true;
+          if (studs[i]['conduct'] >= _this2.grade_minconduct) conduct_awardee = true;
 
           // who
           awardee = studs[i]['name'];
@@ -19641,18 +19724,18 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         try {
           for (_iterator.s(); !(_step = _iterator.n()).done;) {
             var stud = _step.value;
-            if (stud['grade'] > 80) stud['status'] = 1;else if (stud['grade'] >= 75) stud['status'] = 2;else if (stud['grade'] < 75) stud['status'] = 3;else stud['status'] = 0;
+            if (stud['grade'] > _this2.grade_minpassgrd) stud['status'] = 1;else if (stud['grade'] >= _this2.grade_minpassgrd - _this2.grade_warnoffset) stud['status'] = 2;else if (stud['grade'] < _this2.grade_minpassgrd - _this2.grade_warnoffset) stud['status'] = 3;else stud['status'] = 0;
           }
         } catch (err) {
           _iterator.e(err);
         } finally {
           _iterator.f();
         }
-        _this.studs = studs;
+        _this2.studs = studs;
       });
     },
     import_grade: function import_grade() {
-      var _this2 = this;
+      var _this3 = this;
       var form = new FormData();
       form.append('file', this.grade_file);
       axios({
@@ -19664,17 +19747,18 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
         url: '/import_grades',
         data: form
       }).then(function (response) {
-        _this2.message = response.data.message;
-        _this2.showUploadModal = true;
-        _this2.view_grade();
+        _this3.grade_fileup_message = response.data.message;
+        _this3.showUploadModal = true;
+        _this3.view_grade();
       })["catch"](function (err) {
-        _this2.message = 'Something went wrong';
-        _this2.showUploadModal = true;
+        _this3.grade_fileup_message = 'Something went wrong';
+        _this3.showUploadModal = true;
       });
     },
-    show_awardee: function show_awardee(value) {
+    show_awardee: function show_awardee(name, value) {
       this.showAwardsModal = true;
-      this.awardee = value;
+      this.awardee = name;
+      this.awardtype = value;
     }
   }
 }));
@@ -19806,72 +19890,123 @@ var _hoisted_5 = {
   }
 };
 var _hoisted_6 = {
+  "class": "flex"
+};
+var _hoisted_7 = {
   "class": "ml-5 my-auto align-center",
   style: {
     "margin-right": "105px"
   }
 };
-var _hoisted_7 = {
+var _hoisted_8 = {
   "class": "my-auto"
 };
-var _hoisted_8 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Upload ");
-var _hoisted_9 = {
-  "class": "my-auto"
-};
+var _hoisted_9 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Upload ");
 var _hoisted_10 = {
-  "class": "flex md12 align-start"
+  "class": "flex",
+  style: {
+    "margin-left": "auto"
+  }
 };
-var _hoisted_11 = /*#__PURE__*/_withScopeId(function () {
-  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", {
-    "class": "table-slots__head"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
-    colspan: "5"
-  }), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
-    colspan: "1"
-  }, [/*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "TOP 10"), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" / "), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "CONDUCT")]), /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
-    colspan: "1"
-  })], -1 /* HOISTED */);
-});
+var _hoisted_11 = {
+  "class": "my-auto"
+};
 var _hoisted_12 = {
-  colspan: "8"
+  "class": "my-auto"
 };
 var _hoisted_13 = {
+  "class": "flex md12 align-start"
+};
+var _hoisted_14 = {
+  "class": "table-slots__head"
+};
+var _hoisted_15 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    colspan: "5"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_16 = {
+  colspan: "1"
+};
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" / ");
+var _hoisted_18 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "CONDUCT", -1 /* HOISTED */);
+});
+var _hoisted_19 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", {
+    colspan: "1"
+  }, null, -1 /* HOISTED */);
+});
+var _hoisted_20 = {
+  colspan: "8"
+};
+var _hoisted_21 = {
   "class": "table-example--pagination"
 };
-var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Table Configuration ");
-var _hoisted_15 = {
+var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Table Configuration ");
+var _hoisted_23 = {
   "class": "row"
 };
-var _hoisted_16 = {
+var _hoisted_24 = {
   "class": "flex md12 mt-3 mb-2"
 };
-var _hoisted_17 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_25 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "px-3"
   }, "Items and Pagination", -1 /* HOISTED */);
 });
-var _hoisted_18 = {
+var _hoisted_26 = {
   "class": "row"
 };
-var _hoisted_19 = {
-  "class": "flex md12 mt-5 mb-2"
+var _hoisted_27 = {
+  "class": "flex md12 mt-4 mb-2"
 };
-var _hoisted_20 = /*#__PURE__*/_withScopeId(function () {
+var _hoisted_28 = {
+  "class": "flex md12 mb-2"
+};
+var _hoisted_29 = {
+  "class": "flex md12 mb-2"
+};
+var _hoisted_30 = /*#__PURE__*/_withScopeId(function () {
   return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
     "class": "px-3"
   }, "Certificate Awards", -1 /* HOISTED */);
 });
-var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Cancel");
-var _hoisted_22 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Save");
-var _hoisted_23 = {
+var _hoisted_31 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Cancel");
+var _hoisted_32 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Save");
+var _hoisted_33 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)(" Database Configuration ");
+var _hoisted_34 = {
+  "class": "row"
+};
+var _hoisted_35 = {
+  "class": "flex md12 mt-3 mb-2"
+};
+var _hoisted_36 = /*#__PURE__*/_withScopeId(function () {
+  return /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", {
+    "class": "px-3"
+  }, "Data Conditioning", -1 /* HOISTED */);
+});
+var _hoisted_37 = {
+  "class": "flex"
+};
+var _hoisted_38 = {
+  "class": "flex",
+  style: {
+    "margin-left": "auto"
+  }
+};
+var _hoisted_39 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Cancel");
+var _hoisted_40 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Commit");
+var _hoisted_41 = {
   "class": "va-h2 awardname"
 };
-var _hoisted_24 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Close");
+var _hoisted_42 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)("Close");
 function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_Navbar = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("Navbar");
   var _component_va_file_upload = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-file-upload");
   var _component_va_button = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-button");
   var _component_va_form = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-form");
+  var _component_va_divider = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-divider");
   var _component_va_chip = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-chip");
   var _component_va_badge = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-badge");
   var _component_va_pagination = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-pagination");
@@ -19879,14 +20014,15 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   var _component_va_modal = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-modal");
   var _component_va_card_title = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-title");
   var _component_va_input = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-input");
-  var _component_va_divider = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-divider");
   var _component_va_card_content = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-content");
   var _component_va_card_actions = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-card-actions");
+  var _component_va_switch = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-switch");
+  var _component_va_checkbox = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-checkbox");
   var _component_ConfettiExplosion = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("ConfettiExplosion");
   var _component_va_image = (0,vue__WEBPACK_IMPORTED_MODULE_0__.resolveComponent)("va-image");
   return (0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_Navbar), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_1, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_2, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_3, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_4, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"item\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_form, null, {
     "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_file_upload, {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_5, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_file_upload, {
         modelValue: _ctx.grade_file,
         "onUpdate:modelValue": _cache[0] || (_cache[0] = function ($event) {
           return _ctx.grade_file = $event;
@@ -19895,7 +20031,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         "file-types": "xlsx",
         "upload-button-text": "Select file",
         "hide-file-list": ""
-      }, null, 8 /* PROPS */, ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_6, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.grade_file ? _ctx.grade_file.name : "No file selected..."), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+      }, null, 8 /* PROPS */, ["modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_7, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.grade_file ? _ctx.grade_file.name : "No file selected..."), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_8, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
         color: "info",
         gradient: "",
         "icon-right": "upload_file",
@@ -19909,13 +20045,17 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         })
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [_hoisted_8];
+          return [_hoisted_9];
         }),
         _: 1 /* STABLE */
-      })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_9, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
-        icon: "settings",
-        preset: "primary",
-        "icon-color": "#11111150",
+      })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_11, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+        icon: "table_view",
+        preset: "secondary",
+        "icon-color": "#11111180",
+        "class": "mr-3",
+        "pressed-behavior": "mask",
+        "pressed-opacity": 1,
+        "pressed-mask-color": "warning",
         style: {
           "width": "36px",
           "height": "36px"
@@ -19923,10 +20063,24 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
         onClick: _cache[2] || (_cache[2] = function ($event) {
           return _ctx.showTblConfigModal = true;
         })
-      })])])];
+      })]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+        icon: "repartition",
+        preset: "secondary",
+        "icon-color": "#11111180",
+        "pressed-behavior": "mask",
+        "pressed-opacity": 1,
+        "pressed-mask-color": "warning",
+        style: {
+          "width": "36px",
+          "height": "36px"
+        },
+        onClick: _cache[3] || (_cache[3] = function ($event) {
+          return _ctx.showDbConfigModal = true;
+        })
+      })])])])];
     }),
     _: 1 /* STABLE */
-  })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"item\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_data_table, {
+  })])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_divider), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <div class=\"item\"> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_data_table, {
     id: "gradetbl",
     items: _ctx.studs,
     columns: _ctx.grade_columns,
@@ -19939,7 +20093,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     animated: ""
   }, {
     headerAppend: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [_hoisted_11];
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", _hoisted_14, [_hoisted_15, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("th", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("span", null, "TOP " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.awardachievers_count), 1 /* TEXT */), _hoisted_17, _hoisted_18]), _hoisted_19])];
     }),
     "header(award)": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref) {
       var label = _ref.label;
@@ -19959,22 +20113,22 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
 
     "cell(award)": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref2) {
       var value = _ref2.value;
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" top 10 "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" achievers "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
         id: "awardbtn",
         preset: "secondary",
         "border-color": "primary",
         size: "small",
-        "class": "top10",
+        "class": "achievers",
         style: {
           "height": "10px"
         },
         onClick: function onClick($event) {
-          return _ctx.show_awardee(value.split(',', 3).pop().toString());
+          return _ctx.show_awardee(value.split(',', 3).pop().toString(), value.split(',', 1).pop().toString());
         },
-        disabled: value.split(',', 1).pop().toString() > 10
+        disabled: value.split(',', 1).pop().toString() > _ctx.awardachievers_count
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(value.split(',', 1).pop().toString() <= 10 ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A'), 1 /* TEXT */)];
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createTextVNode)((0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(value.split(',', 1).pop().toString() <= _ctx.awardachievers_count ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A'), 1 /* TEXT */)];
         }),
 
         _: 2 /* DYNAMIC */
@@ -19990,7 +20144,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
           "height": "10px"
         },
         onClick: function onClick($event) {
-          return _ctx.show_awardee(value.split(',', 3).pop().toString());
+          return _ctx.show_awardee(value.split(',', 3).pop().toString(), value.split(',', 2).pop().toString());
         },
         disabled: value.split(',', 2).pop().toString() != 'true'
       }, {
@@ -20022,9 +20176,9 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       })) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)];
     }),
     bodyAppend: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_pagination, {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_20, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_21, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_pagination, {
         modelValue: _ctx.grade_currpage,
-        "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+        "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
           return _ctx.grade_currpage = $event;
         }),
         input: "",
@@ -20035,42 +20189,38 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["items", "columns", "per-page", "current-page"])])])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
     modelValue: _ctx.showUploadModal,
-    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
+    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
       return _ctx.showUploadModal = $event;
     }),
-    message: _ctx.message,
+    message: _ctx.grade_fileup_message,
     "cancel-text": null,
     title: "Notice"
   }, null, 8 /* PROPS */, ["modelValue", "message"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
     modelValue: _ctx.showTblConfigModal,
-    "onUpdate:modelValue": _cache[12] || (_cache[12] = function ($event) {
+    "onUpdate:modelValue": _cache[20] || (_cache[20] = function ($event) {
       return _ctx.showTblConfigModal = $event;
     }),
     id: "configtblmodal",
     "no-padding": "",
-    onCancel: _cache[13] || (_cache[13] = function ($event) {
-      return _ctx.gradetblcfg_cancel();
-    }),
-    onClickOutside: _cache[14] || (_cache[14] = function ($event) {
+    onClickOutside: _cache[21] || (_cache[21] = function ($event) {
       return _ctx.gradetblcfg_cancel();
     })
   }, {
-    content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref4) {
-      var ok = _ref4.ok;
+    content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
       return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_title, null, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [_hoisted_14];
+          return [_hoisted_22];
         }),
         _: 1 /* STABLE */
       }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_content, null, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
-            "class": "mr-3",
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_23, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_24, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            "class": "mr-2",
             type: "number",
             placeholder: _ctx.grade_perpage.toString(),
             label: "Students per page",
             modelValue: _ctx.gradetblcfg_perpage,
-            "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
+            "onUpdate:modelValue": _cache[6] || (_cache[6] = function ($event) {
               return _ctx.gradetblcfg_perpage = $event;
             }),
             modelModifiers: {
@@ -20078,7 +20228,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             },
             min: "1",
             max: _ctx.studs.length.toString(),
-            onBlur: _cache[6] || (_cache[6] = function ($event) {
+            onBlur: _cache[7] || (_cache[7] = function ($event) {
               return _ctx.validatetbl_maxperpage();
             })
           }, null, 8 /* PROPS */, ["placeholder", "modelValue", "max"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
@@ -20086,7 +20236,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             placeholder: _ctx.grade_currpage.toString(),
             label: "Current page",
             modelValue: _ctx.gradetblcfg_currpage,
-            "onUpdate:modelValue": _cache[7] || (_cache[7] = function ($event) {
+            "onUpdate:modelValue": _cache[8] || (_cache[8] = function ($event) {
               return _ctx.gradetblcfg_currpage = $event;
             }),
             modelModifiers: {
@@ -20094,22 +20244,70 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             },
             min: "1",
             max: _ctx.grade_pages.toString(),
-            onBlur: _cache[8] || (_cache[8] = function ($event) {
+            onBlur: _cache[9] || (_cache[9] = function ($event) {
               return _ctx.validatetbl_maxcurrpage();
             })
           }, null, 8 /* PROPS */, ["placeholder", "modelValue", "max"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_divider, {
             orientation: "left"
           }, {
             "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-              return [_hoisted_17];
+              return [_hoisted_25];
             }),
             _: 1 /* STABLE */
-          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_18, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_19, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_26, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            type: "number",
+            placeholder: _ctx.awardachievers_count.toString(),
+            label: "Top achievers",
+            modelValue: _ctx.gradetblcfg_achievers,
+            "onUpdate:modelValue": _cache[10] || (_cache[10] = function ($event) {
+              return _ctx.gradetblcfg_achievers = $event;
+            }),
+            modelModifiers: {
+              number: true
+            },
+            min: "1",
+            onBlur: _cache[11] || (_cache[11] = function ($event) {
+              return _ctx.validatetbl_awardachievers();
+            })
+          }, null, 8 /* PROPS */, ["placeholder", "modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_28, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            "class": "mr-2",
+            type: "number",
+            placeholder: _ctx.grade_minpassgrd.toString(),
+            label: "Min. passing grade",
+            modelValue: _ctx.gradetblcfg_minpassgrd,
+            "onUpdate:modelValue": _cache[12] || (_cache[12] = function ($event) {
+              return _ctx.gradetblcfg_minpassgrd = $event;
+            }),
+            modelModifiers: {
+              number: true
+            },
+            min: "70",
+            max: "100",
+            onBlur: _cache[13] || (_cache[13] = function ($event) {
+              return _ctx.validatetbl_maxminpassgrd();
+            })
+          }, null, 8 /* PROPS */, ["placeholder", "modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
+            type: "number",
+            placeholder: _ctx.grade_warnoffset.toString(),
+            label: "Warn offset from min. passing grade..",
+            modelValue: _ctx.gradetblcfg_warnoffset,
+            "onUpdate:modelValue": _cache[14] || (_cache[14] = function ($event) {
+              return _ctx.gradetblcfg_warnoffset = $event;
+            }),
+            modelModifiers: {
+              number: true
+            },
+            min: "1",
+            max: "10",
+            onBlur: _cache[15] || (_cache[15] = function ($event) {
+              return _ctx.validatetbl_maxwarnoffset();
+            })
+          }, null, 8 /* PROPS */, ["placeholder", "modelValue"])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_29, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_input, {
             type: "number",
             placeholder: _ctx.grade_minconduct.toString(),
             label: "Min. good conduct",
             modelValue: _ctx.gradetblcfg_minconduct,
-            "onUpdate:modelValue": _cache[9] || (_cache[9] = function ($event) {
+            "onUpdate:modelValue": _cache[16] || (_cache[16] = function ($event) {
               return _ctx.gradetblcfg_minconduct = $event;
             }),
             modelModifiers: {
@@ -20117,14 +20315,14 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
             },
             min: "70",
             max: "100",
-            onBlur: _cache[10] || (_cache[10] = function ($event) {
+            onBlur: _cache[17] || (_cache[17] = function ($event) {
               return _ctx.validatetbl_maxminconduct();
             })
           }, null, 8 /* PROPS */, ["placeholder", "modelValue"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_divider, {
             orientation: "left"
           }, {
             "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-              return [_hoisted_20];
+              return [_hoisted_30];
             }),
             _: 1 /* STABLE */
           })];
@@ -20138,57 +20336,148 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
-            onClick: ok,
+            onClick: _cache[18] || (_cache[18] = function ($event) {
+              return _ctx.gradetblcfg_cancel();
+            }),
             color: "rgb(118, 124, 136)",
             preset: "secondary"
           }, {
             "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-              return [_hoisted_21];
+              return [_hoisted_31];
             }),
-            _: 2 /* DYNAMIC */
-          }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
-            onClick: _cache[11] || (_cache[11] = function ($event) {
+            _: 1 /* STABLE */
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+            onClick: _cache[19] || (_cache[19] = function ($event) {
               return _ctx.gradetblcfg_save();
-            })
+            }),
+            disabled: !_ctx.gradetblcfg_modified
           }, {
             "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-              return [_hoisted_22];
+              return [_hoisted_32];
+            }),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["disabled"])];
+        }),
+        _: 1 /* STABLE */
+      })];
+    }),
+
+    _: 1 /* STABLE */
+  }, 8 /* PROPS */, ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
+    modelValue: _ctx.showDbConfigModal,
+    "onUpdate:modelValue": _cache[27] || (_cache[27] = function ($event) {
+      return _ctx.showDbConfigModal = $event;
+    }),
+    id: "configdbmodal",
+    "no-padding": "",
+    onClickOutside: _cache[28] || (_cache[28] = function ($event) {
+      return _ctx.gradedbcfg_cancel();
+    })
+  }, {
+    content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_title, null, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [_hoisted_33];
+        }),
+        _: 1 /* STABLE */
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_content, null, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_34, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_35, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_switch, {
+            modelValue: _ctx.gradedbdata_truncate,
+            "onUpdate:modelValue": _cache[22] || (_cache[22] = function ($event) {
+              return _ctx.gradedbdata_truncate = $event;
+            }),
+            label: "Clear Data",
+            size: "small"
+          }, null, 8 /* PROPS */, ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_switch, {
+            modelValue: _ctx.gradedbdata_seed,
+            "onUpdate:modelValue": _cache[23] || (_cache[23] = function ($event) {
+              return _ctx.gradedbdata_seed = $event;
+            }),
+            label: "Re-initialize Data",
+            size: "small",
+            disabled: !_ctx.gradedbdata_truncate
+          }, null, 8 /* PROPS */, ["modelValue", "disabled"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_divider, {
+            orientation: "left"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_36];
             }),
             _: 1 /* STABLE */
           })];
         }),
 
-        _: 2 /* DYNAMIC */
-      }, 1024 /* DYNAMIC_SLOTS */)];
+        _: 1 /* STABLE */
+      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_actions, null, {
+        "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+          return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_37, [_ctx.gradedbdata_truncate ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createBlock)(_component_va_checkbox, {
+            key: 0,
+            modelValue: _ctx.gradedbdata_agree,
+            "onUpdate:modelValue": _cache[24] || (_cache[24] = function ($event) {
+              return _ctx.gradedbdata_agree = $event;
+            }),
+            label: 'On commit, this action cannot be undone',
+            "error-messages": "Please agree to the terms",
+            error: !_ctx.gradedbdata_agree
+          }, null, 8 /* PROPS */, ["modelValue", "error"])) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_38, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+            onClick: _cache[25] || (_cache[25] = function ($event) {
+              return _ctx.gradedbcfg_cancel();
+            }),
+            color: "rgb(118, 124, 136)",
+            preset: "secondary"
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_39];
+            }),
+            _: 1 /* STABLE */
+          }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
+            onClick: _cache[26] || (_cache[26] = function ($event) {
+              return _ctx.gradedbcfg_commit();
+            }),
+            disabled: !_ctx.gradedbdata_agree
+          }, {
+            "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
+              return [_hoisted_40];
+            }),
+            _: 1 /* STABLE */
+          }, 8 /* PROPS */, ["disabled"])])];
+        }),
+        _: 1 /* STABLE */
+      })];
     }),
 
     _: 1 /* STABLE */
   }, 8 /* PROPS */, ["modelValue"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_modal, {
     modelValue: _ctx.showAwardsModal,
-    "onUpdate:modelValue": _cache[15] || (_cache[15] = function ($event) {
+    "onUpdate:modelValue": _cache[29] || (_cache[29] = function ($event) {
       return _ctx.showAwardsModal = $event;
     }),
     id: "awardsmodal",
     "no-padding": "",
     blur: ""
   }, {
-    content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref5) {
-      var ok = _ref5.ok;
-      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ConfettiExplosion), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_image, {
+    content: (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function (_ref4) {
+      var ok = _ref4.ok;
+      return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_ConfettiExplosion), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)(" <va-image v-if=\"awardee !== ''\" :ratio=\"16/9\" src=\"img/cert_acadex.jpg\" /> "), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_image, {
         ratio: 16 / 9,
-        src: "img/certificate.jpg"
-      }), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_23, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.awardee), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_actions, {
+        src: _ctx.awardtype == 'true' ? 'img/cert_gcondt.jpg' : 'img/cert_acadex.jpg'
+      }, null, 8 /* PROPS */, ["src"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("h2", _hoisted_41, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(_ctx.awardee), 1 /* TEXT */), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_card_actions, {
         style: {
-          "justify-content": "flex-end"
+          "justify-content": "flex-end",
+          "padding": "16px"
         }
       }, {
         "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
           return [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_va_button, {
             onClick: ok,
-            color: "warning"
+            size: "small",
+            color: "warning",
+            style: {
+              "padding": "2px 20px"
+            }
           }, {
             "default": (0,vue__WEBPACK_IMPORTED_MODULE_0__.withCtx)(function () {
-              return [_hoisted_24];
+              return [_hoisted_42];
             }),
             _: 2 /* DYNAMIC */
           }, 1032 /* PROPS, DYNAMIC_SLOTS */, ["onClick"])];
