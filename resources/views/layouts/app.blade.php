@@ -60,7 +60,7 @@
                 width: 64px;
             }
             button#awardbtn.conduct span.va-button__content .va-icon {
-                font-size: 8px!important;
+                font-size: 10px!important;
             }
             #configtblmodal .va-modal__footer,
             #configdbmodal .va-modal__footer {
