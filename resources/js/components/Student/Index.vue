@@ -91,33 +91,38 @@
                                 <va-chip square icon="auto_awesome" color="info" size="small">{{ label }}</va-chip>
                             </template>
                             <template #cell(award)="{ value }">
-                                <!-- achievers -->
-                                <va-button
-                                    id="awardbtn"
-                                    preset="secondary" border-color="primary"
-                                    size="small"
-                                    class="achievers"
-                                    style="height: 10px;"
-                                    @click="show_awardee(value.split(',', 3).pop().toString(), value.split(',', 1).pop().toString())"
-                                    :disabled="value.split(',', 1).pop().toString() > awardachievers_count"
-                                >
-                                    {{ value.split(',', 1).pop().toString() <= awardachievers_count ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A' }}
-                                </va-button>
-
-                                <!-- good conduct -->
-                                <va-button
-                                    id="awardbtn"
-                                    :icon="value.split(',', 2).pop().toString() == 'true' ? 'thumb_up' : ''"
-                                    color="secondary"
-                                    preset="secondary" border-color="secondary"
-                                    size="small"
-                                    class="conduct ml-2"
-                                    style="height: 10px;"
-                                    @click="show_awardee(value.split(',', 3).pop().toString(), value.split(',', 2).pop().toString())"
-                                    :disabled="value.split(',', 2).pop().toString() != 'true'"
-                                >
-                                    {{ value.split(',', 2).pop().toString() == 'true' ? 'CONDUCT' : 'N/ A' }}
-                                </va-button>
+                                <div class="flex">
+                                    <div class="my-auto" style="flex: none;">
+                                        <!-- achievers -->
+                                        <va-button
+                                            id="awardbtn"
+                                            preset="secondary" border-color="primary"
+                                            size="small"
+                                            class="achievers"
+                                            style="height: 10px;"
+                                            @click="show_awardee(value.split(',', 3).pop().toString(), value.split(',', 1).pop().toString())"
+                                            :disabled="value.split(',', 1).pop().toString() > awardachievers_count"
+                                        >
+                                            {{ value.split(',', 1).pop().toString() <= awardachievers_count ? "TOP " + value.split(',', 1).pop().toString() : 'N/ A' }}
+                                        </va-button>
+                                    </div>
+                                    <div class="my-auto" style="flex: none;">
+                                        <!-- good conduct -->
+                                        <va-button
+                                            id="awardbtn"
+                                            :icon="value.split(',', 2).pop().toString() == 'true' ? 'thumb_up' : ''"
+                                            color="secondary"
+                                            preset="secondary" border-color="secondary"
+                                            size="small"
+                                            class="conduct ml-2"
+                                            style="height: 10px;"
+                                            @click="show_awardee(value.split(',', 3).pop().toString(), value.split(',', 2).pop().toString())"
+                                            :disabled="value.split(',', 2).pop().toString() != 'true'"
+                                        >
+                                            {{ value.split(',', 2).pop().toString() == 'true' ? 'CONDUCT' : 'N/ A' }}
+                                        </va-button>
+                                    </div>
+                                </div>
                             </template>
 
                             <template #cell(status)="{ value }">
