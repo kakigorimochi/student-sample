@@ -22146,7 +22146,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".item[data-v-a120b6fa] {\n  border: 1px solid var(--va-background-border);\n  background-color: var(--va-background-primary);\n  text-align: center;\n}\n.table-slots__head[data-v-a120b6fa] {\n  color: var(--va-info);\n  background-color: var(--va-background-primary);\n  border-bottom: none;\n}\n.table-example--pagination[data-v-a120b6fa] {\n  display: flex;\n  justify-content: center;\n}\n.va-button__content[data-v-a120b6fa] {\n  padding: 0;\n}\n.awardname[data-v-a120b6fa] {\n  position: absolute;\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  top: 32.5%;\n  left: 0;\n  right: 0;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".item[data-v-a120b6fa] {\n  border: 1px solid var(--va-background-border);\n  background-color: var(--va-background-primary);\n  text-align: center;\n}\n.table-slots__head[data-v-a120b6fa] {\n  color: var(--va-info);\n  background-color: var(--va-background-primary);\n  border-bottom: none;\n}\n.table-example--pagination[data-v-a120b6fa] {\n  display: flex;\n  justify-content: center;\n}\n.va-button__content[data-v-a120b6fa] {\n  padding: 0;\n}\n.awardname[data-v-a120b6fa] {\n  position: absolute;\n  text-align: center;\n  margin-left: auto;\n  margin-right: auto;\n  top: 34%;\n  left: 0;\n  right: 0;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 

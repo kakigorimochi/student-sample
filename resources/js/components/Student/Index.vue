@@ -336,7 +336,7 @@
     text-align: center;
     margin-left: auto;
     margin-right: auto;
-    top: 32.5%;
+    top: 34%;
     left: 0;
     right: 0;
 }
