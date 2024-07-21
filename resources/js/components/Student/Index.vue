@@ -295,7 +295,7 @@
                 </div>
                 <div class="flex" style="margin-left: auto;">
                     <va-button @click="gradedbcfg_cancel()" color="rgb(118, 124, 136)" preset="secondary">Cancel</va-button>
-                    <va-button @click="gradedbcfg_commit()" :disabled="!gradedbdata_agree">Commit</va-button>
+                    <va-button @click="gradedbcfg_commit()" :disabled="!gradedbdata_agree && !gradedbdata_truncate">Commit</va-button>
                 </div>
             </va-card-actions>
         </template>
