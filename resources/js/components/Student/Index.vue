@@ -270,7 +270,7 @@
                             v-model="gradedbdata_truncate"
                             label="Clear Data"
                             size="small"
-                            @click="!gradedbdata_truncate && !gradedbdata_seed"
+                            @click="gradedbcfg_reset()"
                         />
                         <va-switch
                             v-model="gradedbdata_seed"
@@ -442,6 +442,12 @@ export default defineComponent ({
 
             this.showDbConfigModal = false;
         },
+        gradedbcfg_reset() {
+            if (this.gradedbdata_truncate != true) {
+                this.gradedbdata_seed = false;
+                this.gradedbdata_agree = false;
+            }
+        }, 
         gradetblcfg_save() {
             this.showTblConfigModal = false;
 
