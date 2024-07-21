@@ -270,7 +270,7 @@
                             v-model="gradedbdata_truncate"
                             label="Clear Data"
                             size="small"
-                            @click="!gradedbdata_truncate && gradedbdata_seed = false"
+                            @click="!gradedbdata_truncate && !gradedbdata_seed"
                         />
                         <va-switch
                             v-model="gradedbdata_seed"
